@@ -1,4 +1,4 @@
 iassim
 ======
 
-An IAS simulator of the classic architecture of John Von Neumman
+An IAS simulator in C of the classic architecture of John Von Neumman
