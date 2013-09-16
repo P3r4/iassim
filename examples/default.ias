@@ -1,0 +1,27 @@
+
+.mem .1024
+
+.data .10
+
+    1 5 "abcdef ghijkl" 'x'
+
+.code .100
+
+    jump+l 3 store 3
+    load-mq load+mq 10
+    sub 100 add 150 
+    load 10
+
+.pc .100
+
+.code .500
+
+    jump-r 10 jump+r 20
+    div 50 mult 20
+   
+.code .500
+
+    shift-l add 2
+    sub-abs 50
+
+
