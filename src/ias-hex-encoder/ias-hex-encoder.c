@@ -8,10 +8,12 @@
 //21 instructions of ias + exit = 22 inst 
 #define INST_QTT 22
 #define INST_LEN 20
-#define MEM ".mem"
-#define PC ".pc"
+#define STR_LEN 50
 #define DATA ".data"
-#define CODE ".code"
+#define TEXT ".text"
+#define DATA_START 0
+#define TEXT_START 400
+#define MEM_SIZE 1000 //words
 
 char  instructions[INST_QTT][INST_LEN] = {
  "load-mq", "load+mq", "store", "load", "load-neg", "load-abs", "load-abs-neg",
@@ -26,9 +28,8 @@ uint64_t opcodes[INST_QTT] = {
  18, 19, 0
 };
 
-FILE *pFile, *pOutFile;
-//1000 words of 5bytes = 5MB (max 20480 bytes = 20 MB)
-int memSize = 1000, pcStart = 0, dataStart, codeStart, memPos = 0;
+FILE *pIASFile, *pHexFile;
+int memPos;
 
 int isInt(char *str){
         char ints[10] = "0123456789";
@@ -94,44 +95,75 @@ int identifyInst(char *inst){
     return i;
 }
 
-
-int isTagValue(char * tagValue){
-    return (tagValue[0] == '.') && (strlen(tagValue)>1) && isInt(tagValue);
-}
-
 int isNoParamInst(int i){
     return ((i == 0)||(i == 17)||(i == 18)||(i == 21));
 }
 
+int getNextNotTagString(char *str){
+    return (!getNextString(pIASFile,str) && str[0] != '.');
+}
+
+int getNextOp(char *op){
+    return getNextNotTagString(op);
+}
+
+void fprintfHexText(char *text){
+    uint64_t hexWord = atoi(text);  
+    fprintf(pHexFile, "%010"PRIx64"\n",hexWord);
+}
+
+void fprintfHexWord(uint64_t hexWord){
+    fprintf(pHexFile, "%010"PRIx64"\n", hexWord);
+}
+
+void fprintfHexChar(char hexChar){
+    fprintf(pHexFile, "%010x\n", hexChar);
+}
+
+int isChar(char *data){
+    return (data[0]== 39)&&(data[2]== 39);
+}
+
+int isString(char *data){
+    return (data[0] == 34);
+}
+
+int isEndOfString(char * str){
+    int len = strlen(str);
+    return ( str[len-1] == 34);
+}
+
+int fprintfHexString(char * data){         
+    int i;    
+    int len = strlen(data);     
+    for(i = 1; i<len; i++){
+        fprintfHexChar(data[i]); 
+    }
+    while(!getNextString(pIASFile,data) && !isEndOfString(data)){
+        len = strlen(data);        
+        for(i = 0; i<len; i++){
+            fprintfHexChar(data[i]); 
+        }        
+    }
+    len = strlen(data);
+    len = len - 1;    
+    for(i = 0; i<len; i++){
+            fprintfHexChar(data[i]); 
+    }    
+}
+
+
 int readData(char *next){
-    char data[40];
+    char data[STR_LEN];
     int out, len, i, is = 0;
-    uint64_t outn;
-    while( !getNextString(pFile, &data[0]) && data[0] != '.'){
+    while(getNextNotTagString(&data[0])){
         
-        if((data[0]== 39)&&(data[2]== 39)){
-          //  printf("%x %x \n", memPos, data[1]);
-            fprintf(pOutFile, "%x %x ", memPos, data[1]);
-            memPos = memPos + 1; 
-        }else if( is || (data[0] == 34)){
-            len = strlen(&data[0]);
-            if(data[len-1] == 34){
-                len = len - 1;
-            }else{
-                strcat(&data[0]," ");
-                len = len + 1;
-                is = 1;    
-            }            
-            for(i = 1; i<len; i++){
-           //     printf("%x %x\n", memPos, data[i]);
-                fprintf(pOutFile, "%x %x ", memPos, data[i]);
-                memPos = memPos + 1; 
-            }            
-        }else{
-            outn = atoi(&data[0]);
-           // printf("%x %" PRIx64 "\n", outn);
-            fprintf(pOutFile,"%x %" PRIx64 " ", memPos, outn);
-            memPos = memPos + 1; 
+        if(isChar(&data[0])){
+            fprintfHexChar(data[1]);
+        }else if(isString(&data[0]) ){
+            fprintfHexString(&data[0]);                        
+        }else{ 
+            fprintfHexText(&data[0]);
         }     
     }
    
@@ -147,7 +179,7 @@ void buildInst(char *str, uint64_t *inst, uint64_t *op, int si, int so){
         if(isNoParamInst(i)){
             *op = 0;
         }else{ 
-            getNextString(pFile, str);
+            getNextString(pIASFile, str);
             *op = atoi(str) << so;    
         }
     }  
@@ -161,16 +193,16 @@ void buildRightInst(char *str, uint64_t *inst, uint64_t *op){
     buildInst(str, inst, op, 12, 0);   
 }
 
-int readCode(char *next){
+int readText(char *next){
     int i;
     uint64_t instl, opl, instr, opr, word;
-    char inst[40];    
+    char inst[STR_LEN];    
     word = 0; 
     int flag = 1;
      
-    while(flag && !getNextString(pFile,&inst[0]) && inst[0] != '.'){     
+    while(flag && getNextOp(&inst[0])){     
         buildLeftInst(&inst[0], &instl, &opl);
-        if(!getNextString(pFile,&inst[0]) && inst[0] != '.'){ 
+        if(getNextOp(&inst[0])){ 
             buildRightInst(&inst[0], &instr, &opr);
         }else{
             instr = 0;
@@ -179,89 +211,49 @@ int readCode(char *next){
         }      
 
         word = instl | opl | instr| opr;
-        //printf("%" PRIx64 "\n", word);
 
-        fprintf(pOutFile,"%x %" PRIx64 " ", memPos,word);
-        memPos = memPos + 1;
+        fprintfHexWord(word);
     
-/*printf("%" PRIx64 "\n", instl);
-        printf("%" PRIx64 "\n", opl);
-        printf("%" PRIx64 "\n", instr);
-        printf("%" PRIx64 "\n", opr);*/
     } 
     next[0] = '\0';
     strcpy(next, inst);
-  //  printf(">>>>%s", next);
     return 0;
 }
 
-
-
-
 int readTags(char * tag){
     
-    if(!strcmp(tag, MEM)){
-        getNextString(pFile, tag);
-        if( isTagValue(tag) ){
-            memSize = atoi(&tag[1]);
-            printf("memSize: %i\n", memSize); 
-            getNextString(pFile, tag);
-            readTags(tag);
-        }else return -1;   
+    if(!strcmp(tag, DATA)){
+        printf("dataStart"); 
+        readData(tag);    
+    }else{
+        return -1;
+    }
 
-    }else if( !strcmp(tag, PC) ){
-        getNextString(pFile, tag);
-        if(isTagValue(tag)){
-            pcStart = atoi(&tag[1]);
-            printf("pcStart: %i\n", pcStart);  
-            getNextString(pFile, tag);
-            readTags(tag);       
-        }else return -1;
-         
-    }else if( !strcmp(tag, DATA) ){
-        getNextString(pFile,tag);
-        if(isTagValue(tag)){
-            dataStart = atoi(&tag[1]);
-            memPos = dataStart;
-            printf("dataStart: %i\n", dataStart); 
-            readData(tag);  
-            readTags(tag);  
-        }else return -1;
-  
-    }else if( !strcmp(tag, CODE) ){
-        getNextString(pFile,tag);
-        if(isTagValue(tag)){
-            codeStart = atoi(&tag[1]);
-            memPos = codeStart;
-            printf("codeStart: %i\n", codeStart);  
-            readCode(tag);
-            readTags(tag); 
-        }else return -1;
-
+    if(!strcmp(tag, TEXT) ){
+        printf("codeStart");  
+        readText(tag);
+    }else{
+        return -1;        
     }
 }
 
-int buildHexFile(char *nameOutFile){
-    char tag[40];
-    pOutFile = fopen(nameOutFile, "w"); 
-    fprintf(pOutFile,"%s","        ");  
-    if(!getNextString(pFile,&tag[0])){
+int buildHexFile(char *nameHexFile){
+    char tag[STR_LEN];
+    pHexFile = fopen(nameHexFile, "w"); 
+    if(!getNextString(pIASFile,&tag[0])){
         readTags(&tag[0]);
     }
-    fseek ( pOutFile , 0 , SEEK_SET);
-    fprintf(pOutFile, "%x %x ", memSize-1, pcStart);
-    pclose(pOutFile);
-    //printf("tag: %s\n",tag);
+    pclose(pHexFile);
 }
 
 int main(int argc, char *argv[]){
-    pFile = fopen(argv[1],"r");
-    if(pFile == 0){
+    pIASFile = fopen(argv[1],"r");
+    if(pIASFile == 0){
         printf("error-msg: IAS File Not Found.\n");    
         return -1;    
     }else{
        buildHexFile("none");     
-       pclose(pFile);
+       pclose(pIASFile);
        return 0;
     }    
 }
