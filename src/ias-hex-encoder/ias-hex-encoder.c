@@ -29,7 +29,6 @@ uint64_t opcodes[INST_QTT] = {
 };
 
 FILE *pIASFile, *pHexFile;
-int memPos;
 
 int isInt(char *str){
         char ints[10] = "0123456789";
@@ -120,6 +119,9 @@ void fprintfHexChar(char hexChar){
     fprintf(pHexFile, "%010x\n", hexChar);
 }
 
+void fprintfDelimiter(){
+    fprintf(pHexFile, "\n");
+}
 int isChar(char *data){
     return (data[0]== 39)&&(data[2]== 39);
 }
@@ -128,32 +130,29 @@ int isString(char *data){
     return (data[0] == 34);
 }
 
-int isEndOfString(char * str){
-    int len = strlen(str);
-    return ( str[len-1] == 34);
-}
-
-int fprintfHexString(char * data){         
+void fprintfHexString(char * data){         
     int i;    
-    int len = strlen(data);     
-    for(i = 1; i<len; i++){
-        fprintfHexChar(data[i]); 
-    }
-    while(!getNextString(pIASFile,data) && !isEndOfString(data)){
-        len = strlen(data);        
-        for(i = 0; i<len; i++){
+    int len = strlen(data);
+    char c;
+    if(data[len-1] == 34){
+        len = len - 1;
+        for(i = 1; i<len; i++){
             fprintfHexChar(data[i]); 
-        }        
-    }
-    len = strlen(data);
-    len = len - 1;    
-    for(i = 0; i<len; i++){
+        }    
+    }else{
+        for(i = 1; i<len; i++){
             fprintfHexChar(data[i]); 
-    }    
+        }
+        fprintfHexChar(' ');
+        do{        
+            c = fgetc(pIASFile);
+            fprintfHexChar(c);   
+        }while((c!=34) && (c!=EOF));
+    }            
 }
 
 
-int readData(char *next){
+void readData(char *next){
     char data[STR_LEN];
     int out, len, i, is = 0;
     while(getNextNotTagString(&data[0])){
@@ -169,7 +168,6 @@ int readData(char *next){
    
     next[0] = '\0';
     strcpy(next, data);
-    return 0;
 }
 
 void buildInst(char *str, uint64_t *inst, uint64_t *op, int si, int so){
@@ -193,7 +191,7 @@ void buildRightInst(char *str, uint64_t *inst, uint64_t *op){
     buildInst(str, inst, op, 12, 0);   
 }
 
-int readText(char *next){
+void readText(char *next){
     int i;
     uint64_t instl, opl, instr, opr, word;
     char inst[STR_LEN];    
@@ -217,43 +215,58 @@ int readText(char *next){
     } 
     next[0] = '\0';
     strcpy(next, inst);
-    return 0;
 }
 
+
+//tags: .data and .text
 int readTags(char * tag){
-    
     if(!strcmp(tag, DATA)){
-        printf("dataStart"); 
+       // printf("dataStart\n"); 
         readData(tag);    
+        fprintfDelimiter();    
     }else{
         return -1;
-    }
-
+    }    
     if(!strcmp(tag, TEXT) ){
-        printf("codeStart");  
+     //   printf("codeStart\n");  
         readText(tag);
     }else{
         return -1;        
     }
+    return 0;
 }
 
-int buildHexFile(char *nameHexFile){
+void printfMsg(int msg){
+    if(msg == 0){
+        printf("Hex File Successful Created!\n");
+    }else{
+        printf("err-msg: Can't read IAS file.\n");
+    }
+
+}
+
+void buildHexFile(char *nameHexFile){
     char tag[STR_LEN];
+    int msg;
     pHexFile = fopen(nameHexFile, "w"); 
     if(!getNextString(pIASFile,&tag[0])){
-        readTags(&tag[0]);
+        msg = readTags(&tag[0]);
     }
     pclose(pHexFile);
+    if(msg < 0){
+        remove(nameHexFile);
+    }
+    printfMsg(msg);
 }
 
-int main(int argc, char *argv[]){
+void main(int argc, char *argv[]){
+    int msg;    
     pIASFile = fopen(argv[1],"r");
+      
     if(pIASFile == 0){
-        printf("error-msg: IAS File Not Found.\n");    
-        return -1;    
+        printf("err-msg: IAS File Not Found.\n");    
     }else{
        buildHexFile("none");     
        pclose(pIASFile);
-       return 0;
     }    
 }
