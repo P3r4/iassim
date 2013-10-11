@@ -1,0 +1,83 @@
+.data
+    0
+    1
+    2
+    0
+    4
+    0
+    0
+    0
+    11
+    27
+    43
+    0 -1 2 0
+    1 0 1 1
+    0 1 -2 2
+    2 2 1 1
+    0 -1 1 0
+    1 0 0 1
+    0 1 0 1
+    1 0 -1 0
+
+.text
+    load+mq 5
+    mult 4
+    load-mq
+    add 6
+    add 10
+    stor-r 415
+
+    load+mq 5
+    mult 4
+    load-mq
+    add 7
+    add 8
+    stor-l 409
+
+    load+mq 7
+    mult 4
+    load-mq
+    add 6
+    add 9
+    stor-r 409
+
+    load+mq 0
+    mult 0
+    load-mq
+    add 3
+    stor 3
+    load 7
+    add 1
+    store 7
+
+    load 4
+    sub 7
+    sub 1
+    jump+l 403
+
+    load 3
+    stor 0
+    load 0
+    stor 3          
+    stor 7
+    load 6
+    add 1
+    store 6
+
+    load 4
+    sub 6
+    sub 1
+    jump+l 400        
+        
+    load 0
+    stor 6
+    load 5
+    add 1
+    stor 5
+
+    load 4
+    sub 5
+    sub 1
+    jump+l 400
+    exit
+

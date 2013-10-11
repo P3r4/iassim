@@ -108,6 +108,14 @@ int getNextOp(char *op){
 
 void fprintfHexText(char *text){
     uint64_t hexWord = atoi(text);  
+    uint64_t x = 1;
+    x = x << 39;
+    printf("%010"PRIx64"\n",hexWord);
+    if(hexWord<0){
+        hexWord = hexWord * -1;
+        hexWord = hexWord | x;
+        printf("%010"PRIx64"\n",hexWord);
+    }
     fprintf(pHexFile, "%010"PRIx64"\n",hexWord);
 }
 
@@ -120,7 +128,7 @@ void fprintfHexChar(char hexChar){
 }
 
 void fprintfDelimiter(){
-    fprintf(pHexFile, "\n");
+    fprintf(pHexFile, "##########\n");
 }
 int isChar(char *data){
     return (data[0]== 39)&&(data[2]== 39);
