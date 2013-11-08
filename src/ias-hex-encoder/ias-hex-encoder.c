@@ -21,7 +21,7 @@ char  instructions[INST_QTT][INST_LEN] = {
  "add", "add-abs", "sub", "sub-abs", "mult", "div", "shift-l", "shift-r",
  "store-l", "store-r", "exit"};
 
-uint64_t opcodes[INST_QTT] = {
+int64_t opcodes[INST_QTT] = {
  10, 9, 33, 1, 2, 3, 4,
  13, 14, 15, 16,
  5, 7, 6, 8, 11, 12, 20, 21,
@@ -106,20 +106,19 @@ int getNextOp(char *op){
     return getNextNotTagString(op);
 }
 
-void fprintfHexText(char *text){
-    uint64_t hexWord = atoi(text);  
-    uint64_t x = 1;
+void fprintfHexNumber(char *text){
+    int64_t hexWord = atoi(text);  
+    int64_t x = 1;
     x = x << 39;
-    printf("%010"PRIx64"\n",hexWord);
-    if(hexWord<0){
+    if(hexWord<0){    
         hexWord = hexWord * -1;
-        hexWord = hexWord | x;
+        hexWord = x | hexWord;
         printf("%010"PRIx64"\n",hexWord);
     }
     fprintf(pHexFile, "%010"PRIx64"\n",hexWord);
 }
 
-void fprintfHexWord(uint64_t hexWord){
+void fprintfHexWord(int64_t hexWord){
     fprintf(pHexFile, "%010"PRIx64"\n", hexWord);
 }
 
@@ -127,9 +126,6 @@ void fprintfHexChar(char hexChar){
     fprintf(pHexFile, "%010x\n", hexChar);
 }
 
-void fprintfDelimiter(){
-    fprintf(pHexFile, "##########\n");
-}
 int isChar(char *data){
     return (data[0]== 39)&&(data[2]== 39);
 }
@@ -170,7 +166,7 @@ void readData(char *next){
         }else if(isString(&data[0]) ){
             fprintfHexString(&data[0]);                        
         }else{ 
-            fprintfHexText(&data[0]);
+            fprintfHexNumber(&data[0]);
         }     
     }
    
@@ -178,7 +174,7 @@ void readData(char *next){
     strcpy(next, data);
 }
 
-void buildInst(char *str, uint64_t *inst, uint64_t *op, int si, int so){
+void buildInst(char *str, int64_t *inst, int64_t *op, int si, int so){
     int i = identifyInst(str);
     if(i>-1){
         *inst = opcodes[i] << si;
@@ -191,17 +187,17 @@ void buildInst(char *str, uint64_t *inst, uint64_t *op, int si, int so){
     }  
 }
 
-void buildLeftInst(char *str, uint64_t *inst, uint64_t *op){
+void buildLeftInst(char *str, int64_t *inst, int64_t *op){
     buildInst(str, inst, op, 32, 20);   
 }
 
-void buildRightInst(char *str, uint64_t *inst, uint64_t *op){
+void buildRightInst(char *str, int64_t *inst, int64_t *op){
     buildInst(str, inst, op, 12, 0);   
 }
 
 void readText(char *next){
     int i;
-    uint64_t instl, opl, instr, opr, word;
+    int64_t instl, opl, instr, opr, word;
     char inst[STR_LEN];    
     word = 0; 
     int flag = 1;
@@ -225,22 +221,18 @@ void readText(char *next){
     strcpy(next, inst);
 }
 
-
 //tags: .data and .text
 int readTags(char * tag){
-    if(!strcmp(tag, DATA)){
-       // printf("dataStart\n"); 
-        readData(tag);    
-        fprintfDelimiter();    
-    }else{
-        return -1;
-    }    
     if(!strcmp(tag, TEXT) ){
-     //   printf("codeStart\n");  
         readText(tag);
     }else{
         return -1;        
     }
+    if(!strcmp(tag, DATA)){
+        readData(tag);        
+    }else{
+        return -1;
+    }     
     return 0;
 }
 

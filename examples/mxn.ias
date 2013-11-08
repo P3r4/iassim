@@ -1,83 +1,99 @@
-.data
-    0
-    1
-    2
-    0
-    4
-    0
-    0
-    0
-    11
-    27
-    43
-    0 -1 2 0
-    1 0 1 1
-    0 1 -2 2
-    2 2 1 1
-    0 -1 1 0
-    1 0 0 1
-    0 1 0 1
-    1 0 -1 0
-
 .text
-    load+mq 5
-    mult 4
-    load-mq
-    add 6
-    add 10
-    stor-r 415
+    load 41 
+    sub 58
+    sub 31
+    jump+r 29
+    load 58
+    sub 41
+    sub 31
+    jump+r 29
 
-    load+mq 5
-    mult 4
+    load+mq 33
+    mult 59
     load-mq
-    add 7
-    add 8
-    stor-l 409
+    add 34
+    add 38
+    store-r 19
 
-    load+mq 7
-    mult 4
+    load+mq 33
+    mult 41
     load-mq
-    add 6
-    add 9
-    stor-r 409
+    add 35
+    add 36
+    store-l 13
 
-    load+mq 0
+    load+mq 35
+    mult 343
+    load-mq
+    add 34
+    add 37
+    store-r 13
+
+    load+mq 0 
     mult 0
     load-mq
-    add 3
-    stor 3
-    load 7
-    add 1
-    store 7
+    add 39
+    store 39
+    load 35
+    add 31
+    store 35
 
-    load 4
-    sub 7
-    sub 1
-    jump+l 403
+    load 41
+    sub 35
+    sub 31
+    jump+l 7
 
-    load 3
-    stor 0
-    load 0
-    stor 3          
-    stor 7
-    load 6
-    add 1
-    store 6
+    load 39
+    store 0
+    load 30
+    store 39          
+    store 35
+    load 34
+    add 31
+    store 34
 
-    load 4
-    sub 6
-    sub 1
-    jump+l 400        
+    load 59
+    sub 34
+    sub 31
+    jump+l 4        
         
-    load 0
-    stor 6
-    load 5
-    add 1
-    stor 5
+    load 30
+    store 34
+    load 33
+    add 31
+    store 33
 
-    load 4
-    sub 5
-    sub 1
-    jump+l 400
+    load 40
+    sub 33
+    sub 31
+    jump+l 4
     exit
+
+.data
+    0 
+    1 
+    2 
+    0 
+    0 
+    0 
+    42
+    60
+    76
+    0
+    4
+    4
+    -1 1 1 1
+    1 1 1 -1
+    1 1 1 1
+    1 1 -1 1
+    4
+    4
+    1 1 1 1
+    1 -1 1 1
+    1 1 -1 1
+    1 1 1 1
+    0 0 0 0
+    0 0 0 0
+    0 0 0 0
+    0 0 0 0
 
