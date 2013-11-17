@@ -6,49 +6,49 @@
 ------------------------------------------------------------------------------------------
  > Adress Modify
 ------------------------------------------------------------------------------------------
- store-l x      | Replace left adress field ar mem(x) by 12 rightmost bits of AC.
- store-r x      | Replace right adress field ar mem(x) by 12 rightmost bits of AC.
+ 18 storel x      | Replace left adress field ar mem(x) by 12 rightmost bits of AC.
+ 19 storer x      | Replace right adress field ar mem(x) by 12 rightmost bits of AC.
 
 ------------------------------------------------------------------------------------------
  > Arithmetic
 ------------------------------------------------------------------------------------------
- add x          | Add mem(x) to AC and put result in AC.
- add-abs x      | Add absolute value of mem(x) to AC and put result in AC.
- div x          | Divide AC by mem(x), put the quotient in MQ, the remainder in AC.
+ 05 add x          | Add mem(x) to AC and put result in AC.
+ 07 add-abs x      | Add absolute value of mem(x) to AC and put result in AC.
+ 12 div x          | Divide AC by mem(x), put the quotient in MQ, the remainder in AC.
  
- mult x         | Multiply mem(x) by MQ, put most significant bits of result in AC,
+ 11 mult x         | Multiply mem(x) by MQ, put most significant bits of result in AC,
                   put least in MQ and put result in AC.
 
- shift-l        | Shift AC left (multiply by 2).
- shift-r        | Shift AC eight (divide by 2).
- sub x          | Subtract mem(x) to AC and put result in AC.
- sub-abs x      | Subtract absolute value of mem(x) to AC and put result in AC.
+ 20 shift-l        | Shift AC left (multiply by 2).
+ 21 shift-r        | Shift AC eight (divide by 2).
+ 06 sub x          | Subtract mem(x) to AC and put result in AC.
+ 08 sub-abs x      | Subtract absolute value of mem(x) to AC and put result in AC.
 
 ------------------------------------------------------------------------------------------
- > Condicional branch
+ > Conditional branch
 ------------------------------------------------------------------------------------------
- jump+l x       | If AC is nonnegative -> Take next instruction from left half of mem(x).
- jump+r x       | If AC is nonnegative -> Take next instruction from right half of mem(x).
+ 15 jump+l x       | If AC is nonnegative -> Take next instruction from left half of mem(x).
+ 16 jump+r x       | If AC is nonnegative -> Take next instruction from right half of mem(x).
 
 ------------------------------------------------------------------------------------------
  > Data Transfer 
 ------------------------------------------------------------------------------------------
- load x         | Transfer contents of memory x to AC.
- load-abs x     | Transfer absolute value of memory x to AC.
- load-abs-neg x | Transfer negative abs value of mem x to AC.
- load-mq        | Transfer contents of register MQ to the accumulator AC.
- load+mq x      | Transfer contents of memory location x to MQ.
- load-neg x     | Transfer negative contents of memory x to AC.
- store x        | Transfer contents of memory location x to MQ.
+ 01 load x         | Transfer contents of memory x to AC.
+ 03 load-abs x     | Transfer absolute value of memory x to AC.
+ 04 load-abs-neg x | Transfer negative abs value of mem x to AC.
+ 10 load-mq        | Transfer contents of register MQ to the accumulator AC.
+ 09 load+mq x      | Transfer contents of memory location x to MQ.
+ 02 load-neg x     | Transfer negative contents of memory x to AC.
+ 33 store x        | Transfer contents of memory location x to MQ.
 
 ------------------------------------------------------------------------------------------
  > Uncondicional branch
 ------------------------------------------------------------------------------------------
- jump-l x       | Take next instruction from left half of mem(x).
- jump-r x       | Take next instruction from right half of mem(x).
+ 13 jump-l x       | Take next instruction from left half of mem(x).
+ 14 jump-r x       | Take next instruction from right half of mem(x).
 
 ------------------------------------------------------------------------------------------
  > eXtra but necessary
 ------------------------------------------------------------------------------------------
- exit           | Ends execution.
+ 00 exit           | Ends execution.
 

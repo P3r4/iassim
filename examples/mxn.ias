@@ -23,7 +23,7 @@
     store-l 13
 
     load+mq 35
-    mult 343
+    mult 59
     load-mq
     add 34
     add 37

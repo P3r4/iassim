@@ -11,8 +11,6 @@
 #define STR_LEN 50
 #define DATA ".data"
 #define TEXT ".text"
-#define DATA_START 0
-#define TEXT_START 400
 #define MEM_SIZE 1000 //words
 
 char  instructions[INST_QTT][INST_LEN] = {
@@ -113,7 +111,6 @@ void fprintfHexNumber(char *text){
     if(hexWord<0){    
         hexWord = hexWord * -1;
         hexWord = x | hexWord;
-        printf("%010"PRIx64"\n",hexWord);
     }
     fprintf(pHexFile, "%010"PRIx64"\n",hexWord);
 }
@@ -260,13 +257,18 @@ void buildHexFile(char *nameHexFile){
 }
 
 void main(int argc, char *argv[]){
-    int msg;    
-    pIASFile = fopen(argv[1],"r");
-      
+    int msg;
+    char *nhf;
+    if (argc == 2){
+        nhf = "../../hex/none.hex";
+    }else{
+        nhf = argv[2];    
+    }    
+    pIASFile = fopen(argv[1],"r");         
     if(pIASFile == 0){
         printf("err-msg: IAS File Not Found.\n");    
     }else{
-       buildHexFile("none");     
+       buildHexFile(nhf);     
        pclose(pIASFile);
     }    
 }

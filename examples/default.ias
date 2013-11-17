@@ -1,18 +1,15 @@
+.text
+
+    load 3
+    add 4
+    add 5
+    store 10
+    exit
+
 .data
 
     1 
     5 
-    "abc \n def" 
-    'x'
-
-.text
-
-    jump+l 3
-    store 3
-    load-mq
-    load+mq 10
-    sub 100
-    add 150 
-    load 10
+    -3
 
 
