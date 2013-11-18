@@ -2,22 +2,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include "headers/mem.h"
-
-
-#define ON 1
-#define OFF 0
-
-#define AC 0
-#define IBR 1
-#define IR 2
-#define MAR 3
-#define MBR 4
-#define MQ 5
-#define PC 6
-
-#define DR_FLAG 0
-#define JMPR_FLAG 1
-#define END_FLAG 2
+#include "headers/regs-flags.h"
 
 #define OPL 0xff00000000
 #define OPR 0xff000
@@ -25,48 +10,119 @@
 #define ADR 0xfff
 #define INSTR 0xfffff
 
-
-void fetch(uint64_t *mem, uint64_t *regs, int *flags){
-    regs[MAR] = regs[PC];
-    readMEM(mem,regs[MAR],&regs[MBR]);
+uint64_t getOPL(uint64_t word){
+    return (word & OPL) >> 32;
 }
 
-void decodeR(uint64_t *mem, uint64_t *regs, int *flags){
-    if(flags[JMPR_FLAG] == ON){
-        regs[IR] = OPR & regs[MBR];
-        regs[MAR] = ADR & regs[MBR];
-    }else{
-        regs[IR] = OPR & regs[IBR];
-        regs[MAR] = ADR & regs[IBR];       
+uint64_t getOPR(uint64_t word){
+    return (word & OPR) >> 12;
+}
+
+uint64_t getADL(uint64_t word){
+    return (word & ADL) >> 20;
+}
+
+uint64_t getADR(uint64_t word){
+    return (word & OPL);
+}
+
+uint64_t getINSTR(uint64_t word){
+    return (word & INSTR);
+}
+
+void fetch(){
+    uint64_t bus;    
+    setReg(MAR,getReg(PC));
+    bus = readMEM(getReg(MAR));
+    setReg(MBR, bus);
+}
+
+void decodeL(){
+    
+    setReg(IBR, getINSTR(getReg(MBR)));
+    setReg(IR, getOPL(getReg(MBR)));
+    setReg(MAR, getADL(getReg(MBR)));
+    
+}
+
+void decodeR(int reg){
+    setReg(IR,getOPR(getReg(reg)));
+    setReg(MAR,getADR(getReg(reg)));
+    setReg(PC,getReg(PC)+1);     
+}
+
+void updateFlags(){
+    if((getReg(IR) != 10)&&(getReg(IR)>=1)&&(getReg(IR)<=12)){
+        turnON(READMEM_FLAG);
     }
-    regs[IR] = regs[IR] >> 12;
-    regs[PC] = regs[PC] + 1;        
 }
 
-void decode(uint64_t *mem, uint64_t *regs, int *flags){
-    if(flags[DR_FLAG] == ON){
-        decodeR(mem, regs, flags);           
-    }else{
-        regs[IBR] = INSTR & regs[MBR];
-        regs[IR] = OPL & regs[MBR];
-        regs[IR] = regs[IR] >> 32;
-        regs[MAR] = ADL & regs[MBR];
-        regs[MAR] = regs[MAR] >> 20;
+void execute(){
+        
+    if(getReg(IR) == 0){
+        turnON(END_FLAG);
+    }else if(getReg(IR) == 10){
+        
+    }else if(getReg(IR) == 9){
+        
+    }else if(getReg(IR) == 33){
+        //traz AC para MBR
+        writeMEM(getReg(MAR), getReg(MBR));    
+    }else if(getReg(IR) == 1){
+        
+    }else if(getReg(IR) == 2){
+        
+    }else if(getReg(IR) == 3){
+        
+    }else if(getReg(IR) == 4){
+        
+    }else if(getReg(IR) == 13){
+    }else if(getReg(IR) == 14){
+    }else if(getReg(IR) == 15){
+    }else if(getReg(IR) == 16){
+    }else if(getReg(IR) == 5){
+        
+    }else if(getReg(IR) == 7){
+        
+    }else if(getReg(IR) == 6){
+        
+    }else if(getReg(IR) == 8){
+        
+    }else if(getReg(IR) == 11){
+        
+    }else if(getReg(IR) == 12){
+        
+    }else if(getReg(IR) == 20){
+    }else if(getReg(IR) == 21){
+    }else if(getReg(IR) == 18){
+        //traz AC para MBR
+        writeLMEM(getReg(MAR), getReg(MBR));
+    }else if(getReg(IR) == 19){
+        //traz AC para MBR
+        writeRMEM(getReg(MAR), getReg(MBR));
     }
 }
 
 
-void execute(uint64_t *mem, uint64_t *regs, int *flags){
+void instCycle(){
+    while(isOFF(END_FLAG)){        
+        if(isON(FETCH_FLAG)){
+            fetch();
+            if(isOFF(JMPR_FLAG)){
+                decodeL();
+                turnOFF(FETCH_FLAG);
+            }else{
+                decodeR(MBR);
+                turnOFF(JMPR_FLAG);
+            }       
 
-}
+        }else{
+            decodeR(IBR);
+            turnON(FETCH_FLAG);        
+        }       
 
-void instCycle(uint64_t *mem, uint64_t *regs, int *flags){
-    while(flags[END_FLAG] == OFF){
-        fetch();
-        decode();        
         execute();
-        decode();
-        execute();
+
     }
 } 
 

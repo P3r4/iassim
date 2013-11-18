@@ -3,4 +3,6 @@
 #include <stdio.h>
 #include <inttypes.h>
 
+void {
 
+}

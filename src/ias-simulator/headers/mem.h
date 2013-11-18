@@ -1,14 +1,16 @@
 #ifndef mem_h
 #define mem_h
 
-void loadMEM(FILE *, uint64_t *);
+void printfMEM(int, int, int);
 
-void readMEM(uint64_t *, int pos, uint64_t *);
+void loadMEM(FILE *, int);
 
-void writeMEM(uint64_t *, int pos, uint64_t *);
+uint64_t readMEM(int pos);
 
-void writeLMEM(uint64_t *, int pos, uint64_t *);
+void writeMEM(int pos, uint64_t);
 
-void writeRMEM(uint64_t *, int pos, uint64_t *);
+void writeLMEM(int pos, uint64_t);
+
+void writeRMEM(int pos, uint64_t);
 
 #endif
