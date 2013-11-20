@@ -13,6 +13,7 @@
 #define JMPR_FLAG 1
 #define END_FLAG 2
 #define READMEM_FLAG 3
+#define WRITEMEM_FLAG 4
 
 void printfREGS();
 

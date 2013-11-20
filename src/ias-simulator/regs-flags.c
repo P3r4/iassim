@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <inttypes.h>
+#include "headers/base.h"
 
 #define ON 1
 #define OFF 0
@@ -9,7 +7,7 @@ char labels[7][5] = {" AC","IBR"," IR","MAR","MBR"," MQ"," PC"};
 
 uint64_t regs[7] = {0,0,0,0,0,0,0};
 
-int flags[4] = {1,0,0,0};
+int flags[5] = {1,0,0,0,0};
 
 void printfREGS(){
     int i;    
