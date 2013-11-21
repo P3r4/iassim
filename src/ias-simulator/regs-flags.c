@@ -3,9 +3,9 @@
 #define ON 1
 #define OFF 0
 
-char labels[7][5] = {" AC","IBR"," IR","MAR","MBR"," MQ"," PC"};
+char labels[8][5] = {" AC","IBR"," IR","MAR","MBR"," MQ"," PC", "MSK"};
 
-uint64_t regs[7] = {0,0,0,0,0,0,0};
+uint64_t regs[8] = {0,0,0,0,0,0,0,0};
 
 int flags[5] = {1,0,0,0,0};
 

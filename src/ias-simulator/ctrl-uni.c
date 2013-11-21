@@ -63,6 +63,18 @@ void dealControlSigns(uint64_t ir){
         turnON(READMEM_FLAG);
     }else if ((ir == 33)||(ir == 18)||(ir == 19)){
         turnON(WRITEMEM_FLAG);
+    }else if ((ir == 13)||(ir == 14)){
+        turnON(FETCH_FLAG);
+        if(ir == 14){
+            turnON(JMPR_FLAG);            
+        }
+    }else if ((ir == 15)||(ir == 16)){
+        if(getMAG(getReg(AC)) == 0){        
+            turnON(FETCH_FLAG);
+            if(ir == 16){
+                turnON(JMPR_FLAG);            
+            }
+        }
     }
 }
 
@@ -72,6 +84,10 @@ void execute(uint64_t ir){
         op = MBR_AC;      
     }else if(ir == 33){
         op = AC_MBR;
+    }else if(ir == 18){
+        op = AC_MBR_L;
+    }else if(ir == 19){
+        op = AC_MBR_R;
     }else if(ir == 5){
         op = ADD;
     }else if(ir == 6){
@@ -81,27 +97,43 @@ void execute(uint64_t ir){
     }else if(ir == 9){
         op = MBR_MQ;
     }else if(ir == 11){
-        
+        op = MUL;        
     }else if(ir == 12){
+        op = DIV;
     }else if(ir == 20){
+        op = LSH;
     }else if(ir == 21){
+        op = RSH;
+    }else if((ir == 13)||(ir == 14)){
+        op = MAR_PC;
+    }else if((ir == 15)||(ir == 16)){
+        op = MAR_PC_C;
     }
-    alu(op,getReg(AC),getReg(MBR),getReg(MQ));
+    
+    alu(op,getReg(AC),getReg(MAR),getReg(MBR),getReg(MQ));
+}
+
+void saveResults(uint64_t mar, uint64_t mbr, uint64_t mask){
+    if(isON(WRITEMEM_FLAG)){
+        writeMEM(mar,mbr,mask);
+        turnOFF(WRITEMEM_FLAG);
+    }   
+}
+
+void getOperands(uint64_t mar){
+    if(isON(READMEM_FLAG)){  
+        setReg(MBR,readMEM(mar));
+        turnOFF(READMEM_FLAG);
+    }        
 }
 
 void instCycle(){
-
+//    printf("%010" PRIx64 "\n", getReg(PC));
     fetchCycle();  
     dealControlSigns(getReg(IR));
-    if(isON(READMEM_FLAG)){  
-        setReg(MBR,readMEM(getReg(MAR)));
-        turnOFF(READMEM_FLAG);
-    }        
+    getOperands(getReg(MAR));    
     execute(getReg(IR));
-    if(isON(WRITEMEM_FLAG)){
-        writeMEM(getReg(MAR),getReg(MBR));
-        turnOFF(WRITEMEM_FLAG);
-    }   
+    saveResults(getReg(MAR),getReg(MBR),getReg(MSK));
 } 
 
 

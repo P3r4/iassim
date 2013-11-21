@@ -3,14 +3,14 @@
 #include "headers/regs-flags.h"
 
 void main(int argc, char *argv[]){
-    int memSize = 100;
-    FILE * hex = fopen("../../hex/teste_addsub.hex","r");
+    int memSize = 150;
+    FILE * hex = fopen("../../hex/mxn.hex","r");
     loadMEM(hex, memSize);
     fclose(hex);
     while(isOFF(END_FLAG)){ 
         instCycle();
     }
     printfREGS();
-    printfMEM(memSize,0,12);
+    printfMEM(memSize,76,92);
 }
 

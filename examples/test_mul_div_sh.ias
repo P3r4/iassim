@@ -1,0 +1,28 @@
+.text
+
+    load+mq 14 mult 15
+    store 20 load-mq
+    store 21 load+mq 14
+    mult 16 store 22
+    load-mq store 23 
+    
+    load 15 div 17
+    store 25 load-mq
+    store 26 load 16
+    div 17 store 27
+    load-mq store 28
+
+    load 15 shift-r
+    store 30 load 14 
+    shift-l add 18  
+    store 31 exit
+
+.data
+
+    34359738369
+    10000
+    -10000  
+    -3
+    13
+
+

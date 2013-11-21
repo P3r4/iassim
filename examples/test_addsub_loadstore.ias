@@ -1,0 +1,13 @@
+.text
+
+    load 3 add 4
+    add 5 sub 3    
+    store 10 exit
+
+.data
+
+    1 
+    5 
+    -3
+
+

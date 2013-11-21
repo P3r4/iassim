@@ -1,0 +1,13 @@
+.text
+    
+    load 5 sub 6
+    jump+r 0 store 20
+    sub 7 jump-r 3 
+    exit  add 5
+    jump+l 3 jump-l 2
+
+.data
+    
+    13
+    10
+    7

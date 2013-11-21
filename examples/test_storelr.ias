@@ -1,0 +1,16 @@
+.text
+
+    load+mq 6 mult 9
+    load-mq store 20 
+    load 7 store-l 4
+    load 8 store-r 4 
+    load 0 store 0 
+    exit
+
+.data
+
+    34359738369
+    10
+    21
+    -1
+    13

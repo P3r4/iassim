@@ -1,8 +1,5 @@
 #include "headers/base.h"
 
-#define MAG 0x8000000000
-#define NUM 0x7fffffffff
-
 uint64_t getOPL(uint64_t word){
     return (word & OPL) >> 32;
 }
@@ -36,22 +33,21 @@ int64_t toComp2(uint64_t word){
     if(getMAG(word) == 1){
         num = -num;
     }
+    //printf("c2: %010" PRId64 "\n", num);
     return num;    
-}
-
-uint64_t setNegMAG(int64_t num){
-    uint64_t word = -num;
-    word = word | MAG;
-    return word;
 }
 
 uint64_t toMag(int64_t num){
     uint64_t word;
     if(num<0){
-        word = setNegMAG(num);
+        word = -num;
+        word = getNUM(word) | MAG;
     }else{
-        word = num;
+        word = getNUM(num);
     }
     return word;    
 }
+
+
+
 

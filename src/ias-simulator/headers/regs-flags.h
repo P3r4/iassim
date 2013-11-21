@@ -8,12 +8,14 @@
 #define MBR 4
 #define MQ 5
 #define PC 6
+#define MSK 7
 
 #define FETCH_FLAG 0
 #define JMPR_FLAG 1
 #define END_FLAG 2
 #define READMEM_FLAG 3
 #define WRITEMEM_FLAG 4
+
 
 void printfREGS();
 

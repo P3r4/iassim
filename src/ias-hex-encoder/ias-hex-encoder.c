@@ -105,13 +105,14 @@ int getNextOp(char *op){
 }
 
 void fprintfHexNumber(char *text){
-    int64_t hexWord = atoi(text);  
+    int64_t hexWord = strtoll (text, NULL, 10);  
     int64_t x = 1;
     x = x << 39;
     if(hexWord<0){    
         hexWord = hexWord * -1;
         hexWord = x | hexWord;
     }
+    //printf("num->>>%010"PRIx64"\n",hexWord);
     fprintf(pHexFile, "%010"PRIx64"\n",hexWord);
 }
 
