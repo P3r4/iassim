@@ -28,29 +28,6 @@ int64_t opcodes[INST_QTT] = {
 
 FILE *pIASFile, *pHexFile;
 
-int isInt(char *str){
-        char ints[10] = "0123456789";
-        int i = 0;
-        int j, msg;
-        int size = strlen(str);
-        size = size -1;
-        if(str[0]=='-'){
-                i = 1;
-        }
-        do{
-            msg = 1;
-            for(j = 0; j<10; j++){
-                if(str[i]==ints[j]){
-                    msg = 0;
-                }        
-            }             
-            i = i + 1;   
-        }while(msg==0 && i<size);
-        
-        return msg;
-}
-
-
 void eraseSpaces(FILE *pFile, char *c){
     do{
         *c = fgetc(pFile);
@@ -257,19 +234,19 @@ void buildHexFile(char *nameHexFile){
     printfMsg(msg);
 }
 
-void main(int argc, char *argv[]){
-    int msg;
+int main(int argc, char *argv[]){
     char *nhf;
-    if (argc == 2){
-        nhf = "../../hex/none.hex";
+    if (argc == 3){
+        nhf = argv[2];
+        pIASFile = fopen(argv[1],"r");         
+        if(pIASFile == 0){
+            printf("err-msg: IAS File Not Found.\n");    
+        }else{
+            buildHexFile(nhf);     
+            pclose(pIASFile);
+        }
     }else{
-        nhf = argv[2];    
-    }    
-    pIASFile = fopen(argv[1],"r");         
-    if(pIASFile == 0){
-        printf("err-msg: IAS File Not Found.\n");    
-    }else{
-       buildHexFile(nhf);     
-       pclose(pIASFile);
-    }    
+        printf("err-msg: Few Parameters.\n");
+    }
+    return 0;        
 }

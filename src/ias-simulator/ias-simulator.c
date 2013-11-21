@@ -9,13 +9,17 @@ int main(int argc, char *argv[]){
     int x = atoi (argv[5]);
     //FILE * hex = fopen("../../hex/mxn.hex","r");
     FILE * hex = fopen(argv[1],"r");
-    loadMEM(hex, memSize);
-    fclose(hex);
-    while(isOFF(END_FLAG)){ 
-        instCycle();
+    if(hex == 0){
+        printf("err-msg: Hex File Not Found.");
+    }else{
+        loadMEM(hex, memSize);
+        fclose(hex);
+        while(isOFF(END_FLAG)){ 
+            instCycle();
+        }
+        printfREGS();
+        printfMEM(memSize,ma,mb);
     }
-    printfREGS();
-    printfMEM(memSize,ma,mb);
     return 0;
 }
 
