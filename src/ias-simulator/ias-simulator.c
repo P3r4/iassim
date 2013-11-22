@@ -1,6 +1,7 @@
 #include "headers/base.h"
-#include "headers/mem.h"
-#include "headers/regs-flags.h"
+#include "headers/cpu.h"
+#include "headers/utilities.h"
+
 
 int main(int argc, char *argv[]){
     int memSize = atoi(argv[2]);
@@ -14,11 +15,7 @@ int main(int argc, char *argv[]){
     }else{
         loadMEM(hex, memSize);
         fclose(hex);
-        while(isOFF(END_FLAG)){ 
-            instCycle();
-        }
-        printfREGS();
-        printfMEM(memSize,ma,mb);
+        cpu(x,memSize,ma,mb);
     }
     return 0;
 }

@@ -65,24 +65,60 @@ uint64_t rsh(uint64_t ac){
     return out;
 }
 
+uint64_t neg(uint64_t num){
+    uint64_t out;    
+    if(getMAG(num)==1){
+        out = getNUM(num);
+    }else{
+        out = num | MAG;
+    }
+    return out;
+}
 
-void alu(int op, uint64_t ac,  uint64_t mar, uint64_t mbr, uint64_t mq){
+uint64_t absolute(uint64_t num){
+    uint64_t out;    
+    if(getMAG(num)==1){
+        out = getNUM(num);
+    }else{
+        out = num;
+    }
+    return out;
+}
+
+uint64_t negAbs(uint64_t num){
+    return neg(abs(num));
+}
+
+void alu(int op, uint64_t ac, uint64_t mbr, uint64_t mq){
     
     if(op == MBR_AC){
         setReg(AC, mbr);
+    
+    }else if(op == A_MBR_AC){
+        setReg(AC, absolute(mbr));
+
+    }else if(op == N_MBR_AC){
+        setReg(AC, neg(mbr));
+
+    }else if(op == AN_MBR_AC){
+        setReg(AC, negAbs(mbr));
+
     }else if(op == AC_MBR){
         setReg(MBR, ac);
-        setReg(MSK, 0);
+
     }else if(op == AC_MBR_L){
         setReg(MBR, getADR(ac) << 20);
-        setReg(MSK, LCLEAN);
+
     }else if(op == AC_MBR_R){
         setReg(MBR, getADR(ac));
-        setReg(MSK, RCLEAN);
     }else if(op == ADD){        
         setReg(AC, add(ac,mbr));
+    }else if(op == A_ADD){        
+        setReg(AC, add(ac,abs(mbr)));
     }else if(op == SUB){        
         setReg(AC, sub(ac,mbr));
+    }else if(op == SUB){        
+        setReg(AC, sub(ac,abs(mbr)));
     }else if(op == MQ_AC){
         setReg(AC, mq);
     }else if(op == MBR_MQ){
@@ -98,10 +134,8 @@ void alu(int op, uint64_t ac,  uint64_t mar, uint64_t mbr, uint64_t mq){
         setReg(AC,lsh(ac));       
     }else if(op == RSH){
         setReg(AC,rsh(ac));
-    }else if(op == MAR_PC){
-        setReg(PC,mar);
-    }else if(op == MAR_PC_C){
-        if(getMAG(ac) == 0) setReg(PC,mar);
+    }else if(op == AC_MAG){
+        setReg(MBR,getMAG(ac));
     }
     
 }

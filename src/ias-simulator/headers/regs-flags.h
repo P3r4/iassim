@@ -16,8 +16,7 @@
 #define READMEM_FLAG 3
 #define WRITEMEM_FLAG 4
 
-
-void printfREGS();
+void pcAdd1();
 
 void turnON(int);
 

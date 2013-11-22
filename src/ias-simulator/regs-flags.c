@@ -3,17 +3,12 @@
 #define ON 1
 #define OFF 0
 
-char labels[8][5] = {" AC","IBR"," IR","MAR","MBR"," MQ"," PC", "MSK"};
-
 uint64_t regs[8] = {0,0,0,0,0,0,0,0};
 
 int flags[5] = {1,0,0,0,0};
 
-void printfREGS(){
-    int i;    
-    for(i = 0; i<7;i++){
-        printf("%s: %010" PRIx64 "\n",labels[i], regs[i]);
-    }    
+void pcAdd1(){
+    flags[6] = flags[6]+1;
 }
 
 void turnON(int flag){
