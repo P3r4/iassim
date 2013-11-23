@@ -16,6 +16,7 @@ int main(int argc, char *argv[]){
         loadMEM(hex, memSize);
         fclose(hex);
         cpu(x,memSize,ma,mb);
+        printf(" Execution End!\n");
     }
     return 0;
 }

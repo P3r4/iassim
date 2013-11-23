@@ -145,7 +145,7 @@ void printfREGS(){
     
     char flabels[5][15] = {"FETCH_FLAG", "JMPR_FLAG", "END_FLAG", "READMEM_FLAG", "WRITEMEM_FLAG"};
     for(i = 0; i<5;i++){
-        printf("        %s: %010" PRIx64 "\n", flabels[i], isON(i));
+        printf("        %s: %d\n", flabels[i], isON(i));
     }
     printfDelim();    
 }

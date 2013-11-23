@@ -1,0 +1,71 @@
+Bem vindo ao manual de uso!
+
+(1) O diretorio iassim possui os seguintes arquivos/diretorios:
+
+    -iassim
+         dir: examples
+         dir: hex
+         dir: src
+         Makefile
+         README
+
+(2) O diretorio "iassim/examples" possui todos os algoritmos em IAS, 
+    criados para testar os simulador e o diretorio "iassim/hex"
+    possui os mesmos algoritmos traduzidos para hexadecimal.
+
+    (2.1) Para Traduzir um algoritmo em IAS para Hexadecimal, 
+            
+            DENTRO do diretório "iassim" digite:
+
+                "make hex f=<ORIGEM DO ARQUIVO IAS> t=<DESTINO DO ARQUIVO HEXADECIMAL>",
+                
+                se não for dado um DESTINO, o Arquivo gerado será encontrado como "iassim/hex/a.hex",
+
+                também é gerado um arquivo executavel "iassim/encoder"!
+
+                Exemplo do Bubble Sort:
+                
+                "make hex f=./examples/bubble_sort.ias t=./hex/bubble_sort.hex"
+
+                Se der certo seguinte mensagem será exibida:
+                    
+                    "Hex File Successful Created!"
+
+    (2.2) Para Executar no Simulador IAS o arquivo Hexadecimal criado:
+
+            DENTRO do diretório "iassim" digite:
+                
+                "make run f=<ORIGEM DO ARQUIVO HEXADECIMAL> m=<TAMANHO DA MEMÓRIA EM PALAVRAS> 
+                    ma=<INICIO DA IMPRESSÃO MEMÓRIA> mb=<FIM DA IMPRESSÃO MEMÓRIA> x=<MODO DE OPERAÇÃO DA CPU>",
+
+                Esse comando cria um executavel "iassim/iassim"!                
+
+                Exemplo: "make run f=hex/bubble_sort.hex m=200 ma=21 mb=125 x=2",                
+
+                ma e mb limitam o intervalo que é exibido da memória, quando é solicitado a impressão da memória na tela,
+                senão forem informados são respectivamente 0 e 9. Se m não é informado seu valor é 200.
+
+                IMPORTANTE: x pode possuir 3 valores!
+
+                    Se x=0, o arquivo é executado sem paradas e mostra no fim da execução:
+                        - Relação dos tipos de instruções executadas
+                        - Faixa de Memória (ma:mb)
+                        - Registradores
+
+                    Se x=1, a execução para à cada ciclo e as seguintes informações são exibidas na tela:
+
+                         "Press <m> + <Enter> for Memory,
+                            <q> + <Enter> for Executed Instructions,
+                            <r> + <ENTER> for Registers
+                            <h> + <Enter> for HELP."
+
+                    Se x=2, a execução para nos ciclos desejados e seguintes informações são exibidas na tela:
+
+                         "Press <m> + <Enter> for Memory,
+                            <q> + <Enter> for Executed Instructions,
+                            <r> + <ENTER> for Registers
+                            <h> + <Enter> for HELP."
+ 
+                          Stop where PC > <VALOR DE PC>
+
+>>>> Obrigado por ler isso falou o/
