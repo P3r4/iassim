@@ -120,19 +120,34 @@ void printfMEM(int max, int b, int e){
     for(i = mo; i<=mf; i++){ 
         printf("        %04d: %010" PRIx64 "\n", i, readMEM(i));   
     }
+    printfDelim();
 }
 
 void printfPC(){
-   printf(" PC: %010" PRIx64 "\n >",getReg(PC) );    
+   printf(" PC: %010" PRIx64 "\n",getReg(PC) );    
+}
+
+char* printfONOFF(int on){
+    if(on){
+        return "ON";
+    }else{
+        return "OFF";
+    }
 }
 
 void printfREGS(){
     int i;
-    char labels[8][5] = {" AC","IBR"," IR","MAR","MBR"," MQ"," PC", "MSK"};    
+    char labels[8][5] = {"AC","IBR","IR","MAR","MBR","MQ","PC", "MSK"};    
     printf(" Registers\n");
     for(i = 0; i<8;i++){
         printf("        %s: %010" PRIx64 "\n", labels[i], getReg(i));
-    }    
+    }
+    
+    char flabels[5][15] = {"FETCH_FLAG", "JMPR_FLAG", "END_FLAG", "READMEM_FLAG", "WRITEMEM_FLAG"};
+    for(i = 0; i<5;i++){
+        printf("        %s: %010" PRIx64 "\n", flabels[i], isON(i));
+    }
+    printfDelim();    
 }
 
 void loadMEM(FILE *hexFile, int size){
@@ -143,7 +158,34 @@ void loadMEM(FILE *hexFile, int size){
         writeMEM(i,strtoull(buffer, NULL, 16),0);
         i++;
     }
+    printfDelim();
 }
 
+printfHelp(){
+    printf(" Press <m> + <Enter> for Memory,\n       <q> + <Enter> for Executed Instructions,\n       <r> + <ENTER> for Registers,\n       <h> + <Enter> for HELP.\n");
+    printfDelim();    
+}
 
+void cpuStatus(int max, int ma, int mb){
+    char c;
+    printfPC();
+    printf(" > ");    
+    c  = getchar(); 
+    while(c !='\n'){                           
+        while ( getchar() != '\n' );                                  
+        if(c == 'r'){
+            printfREGS();                
+        }else if(c == 'm'){
+            printfMEM(max,ma,mb);                
+        }else if(c == 'q'){
+            printfInstTypeQtts();
+        }else if( c == 'h'){
+            printfHelp();
+        }
+        printf(" > ");    
+        c  = getchar();
+    }
+    printfDelim();
+       
+}
 

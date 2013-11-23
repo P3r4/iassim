@@ -6,8 +6,8 @@
 ------------------------------------------------------------------------------------------
  > Adress Modify
 ------------------------------------------------------------------------------------------
- 18 storel x      | Replace left adress field ar mem(x) by 12 rightmost bits of AC.
- 19 storer x      | Replace right adress field ar mem(x) by 12 rightmost bits of AC.
+ 18 store-l x      | Replace left adress field ar mem(x) by 12 rightmost bits of AC.
+ 19 store-r x      | Replace right adress field ar mem(x) by 12 rightmost bits of AC.
 
 ------------------------------------------------------------------------------------------
  > Arithmetic

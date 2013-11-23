@@ -6,49 +6,36 @@
 void cpu(int x, int max, int ma, int mb){
     char c;        
     int ir;
-    printfDelim();        
-    printf(" Press <s> + <Enter> to show Memory and/or Registers and continue.\n Press <ENTER> to just continue. \n");
-    printfDelim();    
+    int line = 0;
+    if(x!=0) printfHelp();
+    int pc;
+    if(x == 2){
+        printf("Stop where PC >");
+        scanf("%d", &pc);
+        while ( getchar() != '\n' );
+    }
     while(isOFF(END_FLAG)){         
+        if(x == 1){ 
+            cpuStatus(max,ma,mb);
+        }else if(x == 2){
+            
+            if(pc == getReg(PC)){
+                cpuStatus(max,ma,mb);
+                line++;
+            }
+        }       
         ir = instCycle();
         instType(ir);
-        if(x == 1){
-            printfPC();
-            c  = getchar();            
-            if(c == 's'){             
-                while ( getchar() != '\n' );                
-                printfREGS();
-            }else if( c != '\n'){
-                while ( getchar() != '\n' );
-                printf("\n");
-            }
-            printfDelim();
-        }else if(x == 2){
-            printfPC();
-            c  = getchar();            
-            if(c == 's'){             
-                while ( getchar() != '\n' );                
-                printfMEM(max,ma,mb);
-            }else if( c != '\n'){
-                while ( getchar() != '\n' );
-                printf("\n");
-            }
-            printfDelim();            
-        }else if(x == 3){
-            printfPC();
-            c  = getchar();            
-            if(c == 's'){             
-                while ( getchar() != '\n' );                
-                printfREGS();
-            }else if( c != '\n'){
-                while ( getchar() != '\n' );
-                printf("\n");
-            }
-            printfDelim();
+        if(line == 2){
+            line =0;
+            printf(" Stop where PC >");
+            scanf("%d", &pc);
+            while ( getchar() != '\n' );
         }
-        
     }
-    
-    printfInstTypeQtts();
-
+    if(x == 0){
+        printfInstTypeQtts();        
+        printfMEM(max,ma,mb);                
+        printfREGS();                
+    }
 }

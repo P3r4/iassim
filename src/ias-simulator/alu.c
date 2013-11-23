@@ -111,29 +111,40 @@ void alu(int op, uint64_t ac, uint64_t mbr, uint64_t mq){
 
     }else if(op == AC_MBR_R){
         setReg(MBR, getADR(ac));
+
     }else if(op == ADD){        
         setReg(AC, add(ac,mbr));
+
     }else if(op == A_ADD){        
         setReg(AC, add(ac,abs(mbr)));
+
     }else if(op == SUB){        
         setReg(AC, sub(ac,mbr));
-    }else if(op == SUB){        
+
+    }else if(op == A_SUB){        
         setReg(AC, sub(ac,abs(mbr)));
+
     }else if(op == MQ_AC){
         setReg(AC, mq);
+
     }else if(op == MBR_MQ){
         setReg(MQ, mbr);
+
     }else if(op == MUL){
         int64_t out = prod(mbr,mq);        
         setReg(AC,msb(out));
         setReg(MQ,lsb(out));
+
     }else if(op == DIV){
         setReg(MQ, quoc(ac,mbr));
         setReg(AC, mod(ac,mbr));
+
     }else if(op == LSH){
         setReg(AC,lsh(ac));       
+
     }else if(op == RSH){
         setReg(AC,rsh(ac));
+
     }else if(op == AC_MAG){
         setReg(MBR,getMAG(ac));
     }

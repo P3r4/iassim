@@ -10,6 +10,10 @@ void printfDelim();
 
 void printfPC();
 
+void printfHelp();
+
+void cpuStatus(int , int , int );
+
 void loadMEM(FILE *, int);
 
 uint64_t getOPL(uint64_t);

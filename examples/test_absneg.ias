@@ -1,3 +1,15 @@
 .text
-    load
+    load-neg 8 add-abs 9
+    store 20 load-neg 10
+    sub-abs 10 add-abs 11  
+    store 21 load-abs 10
+    add-abs 10 add-abs 11
+    store 22 load-abs-neg 9
+    add-abs 11 store 23
+    exit
+     
 .data
+    -7
+    -13
+    10
+    -20
